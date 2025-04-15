@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Adi Dravidar Welfare Department</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #e3f2fd, #ffffff);
+      color: #333;
+      line-height: 1.6;
+      padding: 30px 15px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #1a237e;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    select:focus {
+      border-color: #1a237e;
+      outline: none;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #1a237e;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .button:hover {
+      background: #3949ab;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .print-button {
+      text-align: right;
+      margin-top: 20px;
+    }
+
+    #selectedInfo {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #3949ab;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 15px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1a237e;
+      color: white;
+    }
+
+    .info-section {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 40px;
+      gap: 20px;
+    }
+
+    .info-box {
+      flex: 1;
+      min-width: 280px;
+      background-color: #f3f4f6;
+      border-left: 5px solid #1a237e;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .info-section {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Adi Dravidar Welfare Department</h1>
+
+    <div class="form-group">
+      <label for="district">Select District:</label>
+      <select id="district">
+        <option value="">-- Select District --</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="college">Select College:</label>
+      <select id="college">
+        <option value="">-- Select College --</option>
+      </select>
+    </div>
+
+    <button class="button" id="showAllBtn">Find My Nearest Hostel</button>
+
+    <div id="report-section" class="hidden">
+      <div class="print-button">
+        <button class="button" onclick="window.print()">Print Report</button>
+      </div>
+
+      <h3 id="selectedInfo"></h3>
+      <div id="all-hostels"></div>
+    </div>
+
+    <div class="info-section">
+      <div class="info-box">
+        <h3>Eligibility Criteria</h3>
+        <ul>
+          <li>Must belong to Adi Dravidar / Scheduled Caste.</li>
+          <li>Enrolled in a recognized college.</li>
+          <li>Family income below ₹2,50,000 per annum.</li>
+          <li>Must reside in the hostel to avail the benefit.</li>
+        </ul>
+      </div>
+
+      <div class="info-box">
+        <h3>Benefits</h3>
+        <ul>
+          <li>Free or subsidized accommodation.</li>
+          <li>Nutritious meals every day.</li>
+          <li>Financial help for books & stationery.</li>
+          <li>Supportive academic environment.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Adi Dravidar Welfare Department. All rights reserved.
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <script>
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS9XY6gz5t9yeJMMb0FcqKSjxgI209X39K2QeRy07T-kbGJwMc3ndiHJIiHhLSSlw/pub?output=csv';
+    let data = [];
+
+    const districtSelect = document.getElementById("district");
+    const collegeSelect = document.getElementById("college");
+    const showAllBtn = document.getElementById("showAllBtn");
+    const allHostelsDiv = document.getElementById("all-hostels");
+    const reportSection = document.getElementById("report-section");
+    const selectedInfo = document.getElementById("selectedInfo");
+
+    fetch(csvUrl)
+      .then(res => res.text())
+      .then(csv => {
+        const parsed = Papa.parse(csv, {
+          header: true,
+          skipEmptyLines: true
+        });
+
+        data = parsed.data;
+        populateDistricts();
+      })
+      .catch(err => {
+        console.error('CSV Load Error:', err);
+        alert("Failed to load data. Please try again later.");
+      });
+
+    function populateDistricts() {
+      const districts = [...new Set(data.map(item => item["College District"]))].sort();
+      districts.forEach(dist => {
+        const option = document.createElement("option");
+        option.value = dist;
+        option.textContent = dist;
+        districtSelect.appendChild(option);
+      });
+    }
+
+    districtSelect.addEventListener("change", () => {
+      const selectedDistrict = districtSelect.value;
+      collegeSelect.innerHTML = '<option value="">-- Select College --</option>';
+      allHostelsDiv.innerHTML = "";
+      reportSection.classList.add("hidden");
+
+      const filteredColleges = data.filter(d => d["College District"] === selectedDistrict);
+      const uniqueColleges = [...new Set(filteredColleges.map(d => d["College Name"]))].sort();
+
+      uniqueColleges.forEach(col => {
+        const option = document.createElement("option");
+        option.value = col;
+        option.textContent = col;
+        collegeSelect.appendChild(option);
+      });
+    });
+
+    collegeSelect.addEventListener("change", () => {
+      allHostelsDiv.innerHTML = "";
+      reportSection.classList.add("hidden");
+    });
+
+    showAllBtn.addEventListener("click", () => {
+      const selectedDistrict = districtSelect.value;
+      const selectedCollege = collegeSelect.value;
+
+      if (!selectedDistrict || !selectedCollege) {
+        alert("Please select both district and college.");
+        return;
+      }
+
+      const matchedHostels = data.filter(
+        d => d["College District"] === selectedDistrict && d["College Name"] === selectedCollege
+      );
+
+      if (matchedHostels.length === 0) {
+        allHostelsDiv.innerHTML = "<p>No hostels mapped to this college.</p>";
+        return;
+      }
+
+      selectedInfo.textContent = `College District: ${selectedDistrict} | College Name: ${selectedCollege}`;
+
+      const headers = [
+        { label: "Hostel Name", key: "Hostel Name" },
+        { label: "Hostel District", key: "Hostel District" },
+        { label: "HMIS ID", key: "HMIS Id" },
+        { label: "Gender", key: "Gender" },
+        { label: "Type", key: "Hostel Type" },
+        { label: "Hostel Address", key: "Hostel Address" },
+        { label: "Approximate Distance from College (KM)", key: "Approximate Distance From College (KM)" }
+      ];
+
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+
+      headers.forEach(header => {
+        const th = document.createElement("th");
+        th.textContent = header.label;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      matchedHostels.forEach(item => {
+        const row = document.createElement("tr");
+        headers.forEach(header => {
+          const td = document.createElement("td");
+          td.textContent = item[header.key] || "-";
+          row.appendChild(td);
+        });
+        tbody.appendChild(row);
+      });
+
+      table.appendChild(tbody);
+      allHostelsDiv.innerHTML = "";
+      allHostelsDiv.appendChild(table);
+      reportSection.classList.remove("hidden");
+    });
+  </script>
+</body>
+</html>
