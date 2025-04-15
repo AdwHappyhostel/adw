@@ -17,6 +17,7 @@
       color: #333;
       line-height: 1.6;
       padding: 30px 15px;
+      overflow-x: hidden;
     }
 
     .container {
@@ -89,6 +90,10 @@
       color: #3949ab;
     }
 
+    .table-responsive {
+      overflow-x: auto;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -131,6 +136,38 @@
     }
 
     @media (max-width: 768px) {
+      h1 {
+        font-size: 24px;
+      }
+
+      select, .button {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .info-box {
+        padding: 15px;
+      }
+
+      th, td {
+        font-size: 13px;
+        padding: 10px;
+      }
+
+      .print-button {
+        text-align: center;
+        margin-top: 15px;
+      }
+
+      #selectedInfo {
+        font-size: 14px;
+        text-align: center;
+      }
+
       .info-section {
         flex-direction: column;
       }
@@ -307,8 +344,12 @@
       });
 
       table.appendChild(tbody);
+      const wrapper = document.createElement("div");
+      wrapper.className = "table-responsive";
+      wrapper.appendChild(table);
+
       allHostelsDiv.innerHTML = "";
-      allHostelsDiv.appendChild(table);
+      allHostelsDiv.appendChild(wrapper);
       reportSection.classList.remove("hidden");
     });
   </script>
