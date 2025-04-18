@@ -4,7 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Adi Dravidar Welfare Department</title>
+
+  <!-- ✅ Choices.js CSS for searchable dropdown -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+
   <style>
+    /* ...[ALL YOUR EXISTING CSS REMAINS UNCHANGED]... */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -153,7 +158,6 @@
       transform: scale(1.03);
     }
 
-    /* Print-specific Styles */
     @media print {
       body {
         background: none;
@@ -161,7 +165,7 @@
       }
 
       footer {
-        display: none; /* This will hide the footer when printing */
+        display: none;
       }
 
       .button, .apply-button {
@@ -224,7 +228,6 @@
       }
     }
 
-    /* Toll-Free Section Styles */
     .toll-free {
       background: #ffeb3b;
       padding: 20px;
@@ -299,146 +302,159 @@
       </div>
     </div>
 
-  <footer>
-    &copy; 2025 Adi Dravidar Welfare Department. All rights reserved.
-  </footer>
+    <footer>
+      &copy; 2025 Adi Dravidar Welfare Department. All rights reserved.
+    </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-  <script>
-    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS9XY6gz5t9yeJMMb0FcqKSjxgI209X39K2QeRy07T-kbGJwMc3ndiHJIiHhLSSlw/pub?output=csv';
-    let data = [];
+    <!-- PapaParse -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <!-- ✅ Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
-    const districtSelect = document.getElementById("district");
-    const collegeSelect = document.getElementById("college");
-    const showAllBtn = document.getElementById("showAllBtn");
-    const allHostelsDiv = document.getElementById("all-hostels");
-    const reportSection = document.getElementById("report-section");
-    const selectedInfo = document.getElementById("selectedInfo");
+    <script>
+      const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS9XY6gz5t9yeJMMb0FcqKSjxgI209X39K2QeRy07T-kbGJwMc3ndiHJIiHhLSSlw/pub?output=csv';
+      let data = [];
+      let collegeChoices;
 
-    fetch(csvUrl)
-      .then(res => res.text())
-      .then(csv => {
-        const parsed = Papa.parse(csv, {
-          header: true,
-          skipEmptyLines: true
+      const districtSelect = document.getElementById("district");
+      const collegeSelect = document.getElementById("college");
+      const showAllBtn = document.getElementById("showAllBtn");
+      const allHostelsDiv = document.getElementById("all-hostels");
+      const reportSection = document.getElementById("report-section");
+      const selectedInfo = document.getElementById("selectedInfo");
+
+      fetch(csvUrl)
+        .then(res => res.text())
+        .then(csv => {
+          const parsed = Papa.parse(csv, {
+            header: true,
+            skipEmptyLines: true
+          });
+
+          data = parsed.data;
+          populateDistricts();
+        })
+        .catch(err => {
+          console.error('CSV Load Error:', err);
+          alert("Failed to load data. Please try again later.");
         });
 
-        data = parsed.data;
-        populateDistricts();
-      })
-      .catch(err => {
-        console.error('CSV Load Error:', err);
-        alert("Failed to load data. Please try again later.");
-      });
-
-    function populateDistricts() {
-      const districts = [...new Set(data.map(item => item["College District"]))].sort();
-      districts.forEach(dist => {
-        const option = document.createElement("option");
-        option.value = dist;
-        option.textContent = dist;
-        districtSelect.appendChild(option);
-      });
-    }
-
-    districtSelect.addEventListener("change", () => {
-      const selectedDistrict = districtSelect.value;
-      collegeSelect.innerHTML = '<option value="">-- Select College --</option>';
-      allHostelsDiv.innerHTML = "";
-      reportSection.classList.add("hidden");
-
-      const filteredColleges = data.filter(d => d["College District"] === selectedDistrict);
-      const uniqueColleges = [...new Set(filteredColleges.map(d => d["College Name"]))].sort();
-
-      uniqueColleges.forEach(col => {
-        const option = document.createElement("option");
-        option.value = col;
-        option.textContent = col;
-        collegeSelect.appendChild(option);
-      });
-    });
-
-    collegeSelect.addEventListener("change", () => {
-      allHostelsDiv.innerHTML = "";
-      reportSection.classList.add("hidden");
-    });
-
-    showAllBtn.addEventListener("click", () => {
-      const selectedDistrict = districtSelect.value;
-      const selectedCollege = collegeSelect.value;
-
-      if (!selectedDistrict || !selectedCollege) {
-        alert("Please select both district and college.");
-        return;
+      function populateDistricts() {
+        const districts = [...new Set(data.map(item => item["College District"]))].sort();
+        districts.forEach(dist => {
+          const option = document.createElement("option");
+          option.value = dist;
+          option.textContent = dist;
+          districtSelect.appendChild(option);
+        });
       }
 
-      const matchedHostels = data.filter(
-        d => d["College District"] === selectedDistrict && d["College Name"] === selectedCollege
-      );
+      districtSelect.addEventListener("change", () => {
+        const selectedDistrict = districtSelect.value;
+        collegeSelect.innerHTML = '<option value="">-- Select College --</option>';
+        allHostelsDiv.innerHTML = "";
+        reportSection.classList.add("hidden");
 
-      if (matchedHostels.length === 0) {
-        allHostelsDiv.innerHTML = "<p>No hostels mapped to this college.</p>";
-        return;
-      }
+        const filteredColleges = data.filter(d => d["College District"] === selectedDistrict);
+        const uniqueColleges = [...new Set(filteredColleges.map(d => d["College Name"]))].sort();
 
-      selectedInfo.textContent = `College District: ${selectedDistrict} | College Name: ${selectedCollege}`;
+        uniqueColleges.forEach(col => {
+          const option = document.createElement("option");
+          option.value = col;
+          option.textContent = col;
+          collegeSelect.appendChild(option);
+        });
 
-      const headers = [
-        { label: "Hostel Name", key: "Hostel Name" },
-        { label: "Hostel District", key: "Hostel District" },
-        { label: "HMIS ID", key: "HMIS Id" },
-        { label: "Gender", key: "Gender" },
-        { label: "Type", key: "Hostel Type" },
-        { label: "Hostel Address", key: "Hostel Address" },
-        { label: "Approximate Distance from College (KM)", key: "Approximate Distance From College (KM)" }
-      ];
-
-      const table = document.createElement("table");
-      const thead = document.createElement("thead");
-      const headerRow = document.createElement("tr");
-
-      headers.forEach(header => {
-        const th = document.createElement("th");
-        th.textContent = header.label;
-        headerRow.appendChild(th);
+        if (collegeChoices) collegeChoices.destroy();
+        collegeChoices = new Choices(collegeSelect, {
+          searchEnabled: true,
+          itemSelectText: '',
+          shouldSort: false,
+          placeholderValue: "-- Select College --",
+          searchPlaceholderValue: "Search College..."
+        });
       });
-      thead.appendChild(headerRow);
-      table.appendChild(thead);
 
-      const tbody = document.createElement("tbody");
-      matchedHostels.forEach(item => {
-        const row = document.createElement("tr");
+      collegeSelect.addEventListener("change", () => {
+        allHostelsDiv.innerHTML = "";
+        reportSection.classList.add("hidden");
+      });
+
+      showAllBtn.addEventListener("click", () => {
+        const selectedDistrict = districtSelect.value;
+        const selectedCollege = collegeSelect.value;
+
+        if (!selectedDistrict || !selectedCollege) {
+          alert("Please select both district and college.");
+          return;
+        }
+
+        const matchedHostels = data.filter(
+          d => d["College District"] === selectedDistrict && d["College Name"] === selectedCollege
+        );
+
+        if (matchedHostels.length === 0) {
+          allHostelsDiv.innerHTML = "<p>No hostels mapped to this college.</p>";
+          return;
+        }
+
+        selectedInfo.textContent = `College District: ${selectedDistrict} | College Name: ${selectedCollege}`;
+
+        const headers = [
+          { label: "Hostel Name", key: "Hostel Name" },
+          { label: "Hostel District", key: "Hostel District" },
+          { label: "HMIS ID", key: "HMIS Id" },
+          { label: "Gender", key: "Gender" },
+          { label: "Type", key: "Hostel Type" },
+          { label: "Hostel Address", key: "Hostel Address" },
+          { label: "Approximate Distance from College (KM)", key: "Approximate Distance From College (KM)" }
+        ];
+
+        const table = document.createElement("table");
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+
         headers.forEach(header => {
-          const td = document.createElement("td");
-          td.textContent = item[header.key] || "-";
-          row.appendChild(td);
+          const th = document.createElement("th");
+          th.textContent = header.label;
+          headerRow.appendChild(th);
         });
-        tbody.appendChild(row);
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+        matchedHostels.forEach(item => {
+          const row = document.createElement("tr");
+          headers.forEach(header => {
+            const td = document.createElement("td");
+            td.textContent = item[header.key] || "-";
+            row.appendChild(td);
+          });
+          tbody.appendChild(row);
+        });
+
+        table.appendChild(tbody);
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "table-responsive";
+        wrapper.appendChild(table);
+
+        allHostelsDiv.innerHTML = "";
+        allHostelsDiv.appendChild(wrapper);
+
+        const applyLink = document.createElement("div");
+        applyLink.innerHTML = `
+          <a href="https://nallosai.tn.gov.in/form_otp.php" target="_blank" class="apply-button">
+            🚀 Click here to Apply for Hostel Admission
+          </a>
+        `;
+        applyLink.style.textAlign = "center";
+        applyLink.style.marginTop = "30px";
+        allHostelsDiv.appendChild(applyLink);
+
+        reportSection.classList.remove("hidden");
+        reportSection.scrollIntoView({ behavior: "smooth" });
       });
-
-      table.appendChild(tbody);
-
-      const wrapper = document.createElement("div");
-      wrapper.className = "table-responsive";
-      wrapper.appendChild(table);
-
-      allHostelsDiv.innerHTML = "";
-      allHostelsDiv.appendChild(wrapper);
-
-      const applyLink = document.createElement("div");
-      applyLink.innerHTML = `
-
-        <a href="https://nallosai.tn.gov.in/form_otp.php" target="_blank" class="apply-button">
-          🚀 Click here to Apply for Hostel Admission
-        </a>
-      `;
-      applyLink.style.textAlign = "center";
-      applyLink.style.marginTop = "30px";
-      allHostelsDiv.appendChild(applyLink);
-
-      reportSection.classList.remove("hidden");
-      reportSection.scrollIntoView({ behavior: "smooth" });
-    });
-  </script>
+    </script>
 </body>
 </html>
