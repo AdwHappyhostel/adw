@@ -383,22 +383,22 @@
 
         // Submit to backend (optional)
         fetch("https://script.google.com/macros/s/AKfycbwnbh3UsuybRF6zoeUqwgBSwiiBatUVGR_gA_PT28dLBjv0S--3wwHGUA8z--IDKDMW/exec", {
-          method:"POST",
-          body: JSON.stringify({
-            name,
-            phone,
-            gender,
-            nativeDistrict,
-            selectedDistrict,
-            selectedCollege
-          }),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        })
-        .then(res => res.text())
-        .then(msg => console.log("User data submitted:", msg))
-        .catch(err => console.error("Submit error:", err));
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    name,
+    phone,
+    gender,
+    nativeDistrict,
+    selectedDistrict,
+    selectedCollege
+  })
+})
+.then(res => res.json())
+.then(data => console.log("Success:", data))
+.catch(err => console.error("Submit error:", err));
 
         // Filter hostels
         const matchedHostels = data.filter(
