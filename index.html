@@ -1,15 +1,16 @@
+<!-- [Start of your HTML file] -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title> ADU DRAVIDAR WELFARE DEPARTMENT</title>
+  <title>ADU DRAVIDAR WELFARE DEPARTMENT</title>
 
   <!-- ✅ Choices.js CSS for searchable dropdown -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 
   <style>
-    /* ...[ALL YOUR EXISTING CSS REMAINS UNCHANGED]... */
+    /* [Your original styles remain unchanged] */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -49,7 +50,7 @@
     }
 
     .header-logo img {
-      width: 80px; /* You can adjust the size */
+      width: 80px;
       height: auto;
     }
 
@@ -63,7 +64,7 @@
       font-weight: bold;
     }
 
-    select {
+    select, input {
       width: 100%;
       padding: 12px;
       border: 1px solid #ccc;
@@ -72,7 +73,7 @@
       transition: border-color 0.3s;
     }
 
-    select:focus {
+    select:focus, input:focus {
       border-color: #1a237e;
       outline: none;
     }
@@ -133,17 +134,18 @@
     .info-section {
       display: flex;
       flex-wrap: wrap;
+      gap: 30px;
       margin-top: 40px;
-      gap: 20px;
+      justify-content: space-between;
     }
 
     .info-box {
-      flex: 1;
-      min-width: 280px;
-      background-color: #f3f4f6;
-      border-left: 5px solid #1a237e;
+      flex: 1 1 48%;
+      background: #f1f8e9;
       padding: 20px;
-      border-radius: 5px;
+      border-left: 6px solid #1a237e;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     footer {
@@ -171,76 +173,6 @@
       transform: scale(1.03);
     }
 
-    @media print {
-      body {
-        background: none;
-        padding: 0;
-      }
-
-      footer {
-        display: none;
-      }
-
-      .button, .apply-button {
-        display: none;
-      }
-
-      .container {
-        padding: 15px;
-      }
-
-      .form-group {
-        display: none;
-      }
-
-      .info-box {
-        break-inside: avoid;
-        page-break-inside: avoid;
-      }
-
-      .toll-free {
-        page-break-before: avoid;
-      }
-    }
-
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 24px;
-      }
-
-      select, .button {
-        font-size: 14px;
-        padding: 10px;
-      }
-
-      .form-group {
-        margin-bottom: 15px;
-      }
-
-      .info-box {
-        padding: 15px;
-      }
-
-      th, td {
-        font-size: 13px;
-        padding: 10px;
-      }
-
-      .print-button {
-        text-align: center;
-        margin-top: 15px;
-      }
-
-      #selectedInfo {
-        font-size: 14px;
-        text-align: center;
-      }
-
-      .info-section {
-        flex-direction: column;
-      }
-    }
-
     .toll-free {
       background: #ffeb3b;
       padding: 20px;
@@ -252,16 +184,51 @@
       margin-top: 40px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
-
   </style>
 </head>
+
 <body>
   <div class="container">
-    <!-- Emblem Logo Section -->
     <div class="header-logo">
       <img src="https://raw.githubusercontent.com/AdwHappyhostel/adw/main/Tamil_Nadu_Emblem.png" />
       <h1>Adi Dravidar Welfare Department</h1>
-    </div>   
+    </div>
+
+    <!-- 👤 Student Details -->
+<h2 style="color: #1a237e;">👤 Student Details</h2>
+
+<div class="form-group">
+  <div>
+    <label for="userName">Your Name:</label>
+    <input type="text" id="userName" placeholder="Enter your full name" required />
+  </div>
+
+  <div>
+    <label for="userPhone">Phone Number:</label>
+    <input type="tel" id="userPhone" placeholder="Enter 10-digit mobile number" maxlength="10" required />
+  </div>
+</div>
+
+<div class="form-group">
+  <div>
+    <label for="userGender">Gender:</label>
+    <select id="userGender" required>
+      <option value="">-- Select Gender --</option>
+      <option value="BOYS">MALE</option>
+      <option value="GIRLS">FEMALE</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="nativeDistrict">Your Native District:</label>
+    <select id="nativeDistrict">
+      <option value="">-- Select Native District --</option>
+    </select>
+  </div>
+</div>
+
+    <!-- 🏫 College Details -->
+    <h2 style="margin-top: 30px; color: #1a237e;">🏫 College Details</h2>
 
     <div class="form-group">
       <label for="district">Select District:</label>
@@ -283,7 +250,6 @@
       <div class="print-button">
         <button class="button" onclick="window.print()">🖨️ Print Report</button>
       </div>
-
       <h3 id="selectedInfo"></h3>
       <div id="all-hostels"></div>
     </div>
@@ -297,7 +263,6 @@
           <li>✅ Must reside in the hostel to avail the benefit.</li>
         </ul>
       </div>
-
       <div class="info-box">
         <h3>🎁 Benefits</h3>
         <ul>
@@ -323,9 +288,8 @@
       &copy; 2025 Adi Dravidar Welfare Department. All rights reserved.
     </footer>
 
-    <!-- PapaParse -->
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <!-- ✅ Choices.js -->
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
     <script>
@@ -335,6 +299,7 @@
 
       const districtSelect = document.getElementById("district");
       const collegeSelect = document.getElementById("college");
+      const nativeDistrictSelect = document.getElementById("nativeDistrict");
       const showAllBtn = document.getElementById("showAllBtn");
       const allHostelsDiv = document.getElementById("all-hostels");
       const reportSection = document.getElementById("report-section");
@@ -359,10 +324,15 @@
       function populateDistricts() {
         const districts = [...new Set(data.map(item => item["College District"]))].sort();
         districts.forEach(dist => {
-          const option = document.createElement("option");
-          option.value = dist;
-          option.textContent = dist;
-          districtSelect.appendChild(option);
+          const option1 = document.createElement("option");
+          option1.value = dist;
+          option1.textContent = dist;
+          districtSelect.appendChild(option1);
+
+          const option2 = document.createElement("option");
+          option2.value = dist;
+          option2.textContent = dist;
+          nativeDistrictSelect.appendChild(option2);
         });
       }
 
@@ -392,26 +362,53 @@
         });
       });
 
-      collegeSelect.addEventListener("change", () => {
-        allHostelsDiv.innerHTML = "";
-        reportSection.classList.add("hidden");
-      });
-
       showAllBtn.addEventListener("click", () => {
+        const name = document.getElementById("userName").value.trim();
+        const phone = document.getElementById("userPhone").value.trim();
+        const gender = document.getElementById("userGender").value;
+        const nativeDistrict = document.getElementById("nativeDistrict").value;
         const selectedDistrict = districtSelect.value;
         const selectedCollege = collegeSelect.value;
 
-        if (!selectedDistrict || !selectedCollege) {
-          alert("Please select both district and college.");
+        if (!name || !phone || !gender || !nativeDistrict || !selectedDistrict || !selectedCollege) {
+          alert("Please fill in all fields including personal details.");
           return;
         }
 
+        const phoneRegex = /^[6-9]\d{9}$/;
+        if (!phoneRegex.test(phone)) {
+          alert("Please enter a valid 10-digit phone number starting with 6, 7, 8, or 9.");
+          return;
+        }
+
+        // Submit to backend (optional)
+        fetch("https://script.google.com/macros/s/AKfycbwnbh3UsuybRF6zoeUqwgBSwiiBatUVGR_gA_PT28dLBjv0S--3wwHGUA8z--IDKDMW/exec", {
+          method:"POST",
+          body: JSON.stringify({
+            name,
+            phone,
+            gender,
+            nativeDistrict,
+            selectedDistrict,
+            selectedCollege
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(res => res.text())
+        .then(msg => console.log("User data submitted:", msg))
+        .catch(err => console.error("Submit error:", err));
+
+        // Filter hostels
         const matchedHostels = data.filter(
-          d => d["College District"] === selectedDistrict && d["College Name"] === selectedCollege
+          d => d["College District"] === selectedDistrict &&
+               d["College Name"] === selectedCollege &&
+               d["Gender"]?.toLowerCase() === gender.toLowerCase()
         );
 
         if (matchedHostels.length === 0) {
-          allHostelsDiv.innerHTML = "<p>No hostels mapped to this college.</p>";
+          allHostelsDiv.innerHTML = "<p>No hostels mapped to this college for selected gender.</p>";
           return;
         }
 
@@ -424,7 +421,7 @@
           { label: "Gender", key: "Gender" },
           { label: "Type", key: "Hostel Type" },
           { label: "Hostel Address", key: "Hostel Address" },
-         { label: "Approximate Distance from College (KM)", key: "Approximate Distance From College (KM)" }
+          { label: "Approximate Distance from College (KM)", key: "Approximate Distance From College (KM)" }
         ];
 
         const table = document.createElement("table");
@@ -460,7 +457,7 @@
         allHostelsDiv.appendChild(wrapper);
 
         const applyLink = document.createElement("div");
-        applyLink.innerHTML = `
+        applyLink.innerHTML = ` 
           <a href="https://nallosai.tn.gov.in/form_otp.php" target="_blank" class="apply-button">
             🚀 Click here to Apply for Hostel Admission
           </a>
@@ -473,5 +470,6 @@
         reportSection.scrollIntoView({ behavior: "smooth" });
       });
     </script>
+  </div>
 </body>
 </html>
