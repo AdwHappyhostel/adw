@@ -9,10 +9,10 @@
   <!-- ✅ Choices.js CSS for searchable dropdown -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 
-const firebaseConfig = {
+  const firebaseConfig = {
   apiKey: "AIzaSyAPu3xTPD_Tl6aC0ekW3Ypgynhdsh5tHPo",
   authDomain: "student-submissions-54c53.firebaseapp.com",
   projectId: "student-submissions-54c53",
@@ -412,7 +412,7 @@ const app = initializeApp(firebaseConfig);
   nativeDistrict,
   selectedDistrict,
   selectedCollege,
-  timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  timestamp: firebase.firestore.Timestamp.now()
 })
 .then(() => console.log("Submitted to Firestore"))
 .catch(error => console.error("Firestore error:", error));
