@@ -8,7 +8,22 @@
 
   <!-- ✅ Choices.js CSS for searchable dropdown -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+  </script>
   <style>
     /* [Your original styles remain unchanged] */
     * {
@@ -389,23 +404,17 @@
         }
 
         // Submit to backend (optional)
-        fetch("https://script.google.com/macros/s/AKfycbwELAQpTphmmnsDBRLxtSEa9pDpoLg30ofVUHkpmzONktwOm70ymJGpBT1UUH-JQOzj/exec", {
-method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    name,
-    phone,
-    gender,
-    nativeDistrict,
-    selectedDistrict,
-    selectedCollege
-  })
+  db.collection("student_submissions").add({
+  name,
+  phone,
+  gender,
+  nativeDistrict,
+  selectedDistrict,
+  selectedCollege,
+  timestamp: firebase.firestore.FieldValue.serverTimestamp()
 })
-.then(res => res.json())
-.then(data => console.log("Success:", data))
-.catch(err => console.error("Submit error:", err));
+.then(() => console.log("Submitted to Firestore"))
+.catch(error => console.error("Firestore error:", error));
 
         // Filter hostels
         const matchedHostels = data.filter(
