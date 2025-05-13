@@ -8,10 +8,12 @@
 
   <!-- ✅ Choices.js CSS for searchable dropdown -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-<script type="module">
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<!-- ✅ Firebase App (compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 
+<script>
+  // ✅ Firebase Config
   const firebaseConfig = {
   apiKey: "AIzaSyAPu3xTPD_Tl6aC0ekW3Ypgynhdsh5tHPo",
   authDomain: "student-submissions-54c53.firebaseapp.com",
@@ -21,10 +23,12 @@
   appId: "1:1020744006862:web:1324f0d4003e140c59e49f"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-  </script>
+  // ✅ Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // ✅ Firestore DB available globally
+  const db = firebase.firestore();
+</script>
   <style>
     /* [Your original styles remain unchanged] */
     * {
